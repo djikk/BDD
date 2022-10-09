@@ -13,10 +13,11 @@ public class MoneyTransferPage {
     private SelenideElement notification = $("[data-test-id=error-notification]");
 
 
-    public void importTransferData(int value, String cardNumber) {
-        transferSumField.setValue(Integer.toString(value));
-        transferCardField.setValue(String.valueOf(cardNumber));
+    public DashboardPage importTransferData(int amount, String cardNumber) {
+        transferSumField.setValue(Integer.toString(amount));
+        transferCardField.setValue(cardNumber);
         applyButton.click();
+        return new DashboardPage();
     }
 
     public void getNotification() {

@@ -36,14 +36,13 @@ class MoneyTransferTest {
 
     @Test
     void transferFromCard1ToCard2() {
-        int amount = 200;
-        String cardNumber = String.valueOf(DataHelper.getFirstCardNumber());
         val dashboardPage = new DashboardPage();
         var firstCardBalance = dashboardPage.getFirstCardBalance();
         var secondCardBalance = dashboardPage.getSecondCardBalance();
-        dashboardPage.transferButtonFirstToSecond();
-        val transferPage = new MoneyTransferPage();
-        transferPage.importTransferData(amount, cardNumber);
+        int destinationCardIndex = 1;
+        int amount = 200;
+        dashboardPage.transferTo(destinationCardIndex)
+                .importTransferData(amount, DataHelper.getFirstCardNumber().getNumber());
         var currentFirstCar1Balance = dashboardPage.getFirstCardBalance();
         var currentSecondCardBalance = dashboardPage.getSecondCardBalance();
 
@@ -53,14 +52,13 @@ class MoneyTransferTest {
 
     @Test
     void transferFromCard2ToCard1() {
-        int amount = 200;
-        String cardNumber = String.valueOf(DataHelper.getSecondCardNumber());
         val dashboardPage = new DashboardPage();
         var firstCardBalance = dashboardPage.getFirstCardBalance();
         var secondCardBalance = dashboardPage.getSecondCardBalance();
-        dashboardPage.transferButtonSecondToFirst();
-        val transferPage = new MoneyTransferPage();
-        transferPage.importTransferData(amount, cardNumber);
+        int destinationCardIndex = 0;
+        int amount = 200;
+        dashboardPage.transferTo(destinationCardIndex)
+                .importTransferData(amount, DataHelper.getSecondCardNumber().getNumber());
         var currentFirstCardBalance = dashboardPage.getFirstCardBalance();
         var currentSecondCardBalance = dashboardPage.getSecondCardBalance();
 
@@ -70,42 +68,27 @@ class MoneyTransferTest {
 
     @Test
     void transferMoneyMoreThanCardBalanceFromCard1ToCard2() {
-        int amount = 11_000;
-        String cardNumber = String.valueOf(DataHelper.getFirstCardNumber());
         val dashboardPage = new DashboardPage();
         var firstCardBalance = dashboardPage.getFirstCardBalance();
         var secondCardBalance = dashboardPage.getSecondCardBalance();
-        dashboardPage.transferButtonFirstToSecond();
-        val transferPage = new MoneyTransferPage();
-        transferPage.importTransferData(amount, cardNumber);
-        var currentFirstCar1Balance = dashboardPage.getFirstCardBalance();
-        var currentSecondCardBalance = dashboardPage.getSecondCardBalance();
-        if (currentFirstCar1Balance < amount) {
-            transferPage.getNotification();
-        }
-
-        Assertions.assertEquals(firstCardBalance - amount, currentFirstCar1Balance);
-        Assertions.assertEquals(secondCardBalance + amount, currentSecondCardBalance);
-
+        int destinationCardIndex = 1;
+        int amount = 11_000;
+        dashboardPage.transferTo(destinationCardIndex)
+                .importTransferData(amount, DataHelper.getFirstCardNumber().getNumber());
+        var transferPage = new MoneyTransferPage();
+        transferPage.getNotification();
     }
 
     @Test
     void transferMoneyMoreThanCardBalanceFromCard2ToCard1() {
-        int amount = 22_000;
-        String cardNumber = String.valueOf(DataHelper.getSecondCardNumber());
         val dashboardPage = new DashboardPage();
         var firstCardBalance = dashboardPage.getFirstCardBalance();
         var secondCardBalance = dashboardPage.getSecondCardBalance();
-        dashboardPage.transferButtonSecondToFirst();
-        val transferPage = new MoneyTransferPage();
-        transferPage.importTransferData(amount, cardNumber);
-        var currentFirstCardBalance = dashboardPage.getFirstCardBalance();
-        var currentSecondCardBalance = dashboardPage.getSecondCardBalance();
-        if (currentSecondCardBalance < amount) {
-            transferPage.getNotification();
-        }
-
-        Assertions.assertEquals(secondCardBalance - amount, currentSecondCardBalance);
-        Assertions.assertEquals(firstCardBalance + amount, currentFirstCardBalance);
+        int destinationCardIndex = 0;
+        int amount = 22_000;
+        dashboardPage.transferTo(destinationCardIndex)
+                .importTransferData(amount, DataHelper.getSecondCardNumber().getNumber());
+        var transferPage = new MoneyTransferPage();
+        transferPage.getNotification();
     }
 }
